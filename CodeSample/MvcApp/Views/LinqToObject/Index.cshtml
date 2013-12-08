@@ -1,0 +1,155 @@
+﻿@model MvcApp.ViewModels.LinqToObjectViewModel
+
+@{
+    ViewBag.Title = "LinqToObject";
+}
+
+<h2>LinqToObject</h2>
+
+@using (Html.BeginForm())
+{
+    <button name="act" value="course">統計課程資料</button>
+    <button name="act" value="student">統計學生成績</button>
+}
+
+<div width="100%">
+    <div style="float: left;">
+        <table border="1" style="border-collapse: collapse;">
+            <tr>
+                <th>課程代號</th>
+                <th>課程名稱</th>
+                <th>老師代號</th>
+            </tr>
+            @foreach (var item in Model.School.CourseCollection)
+            {
+                <tr>
+                    <td>@item.CourseID</td>
+                    <td>@item.Name</td>
+                    <td>@item.TeacherID</td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div style="float: left;">&nbsp;</div>
+    <div style="float: left;">
+        <table border="1" style="border-collapse: collapse;">
+            <tr>
+                <th>老師代號</th>
+                <th>姓名</th>
+            </tr>
+            @foreach (var item in Model.School.TeacherCollection)
+            {
+                <tr>
+                    <td>@item.TeacherID</td>
+                    <td>@item.Name</td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div style="float: left;">&nbsp;</div>
+    <div style="float: left;">
+        <table border="1" style="border-collapse: collapse;">
+            <tr>
+                <th>學生代號</th>
+                <th>姓名</th>
+            </tr>
+            @foreach (var item in Model.School.StudentCollection)
+            {
+                <tr>
+                    <td>@item.StudentID</td>
+                    <td>@item.Name</td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div style="float: left;">&nbsp;&nbsp;</div>
+    @for (int i = 0; i < 5; i++)
+    {
+        <div style="float: left;">
+            <table border="1" style="border-collapse: collapse;">
+                <tr>
+                    <th>課程代號</th>
+                    <th>學生代號</th>
+                    <th>成績</th>
+                </tr>
+                @foreach (var item in Model.School.StudentCourseGradeCollection.Where(w => w.CourseID == i))
+                {
+                    <tr>
+                        <td>@item.CourseID</td>
+                        <td>@item.StudentID</td>
+                        <td>
+                        @if (item.Grade<60)
+                        {
+                            @:<font style="color:red;">@item.Grade</font>
+                        }
+                        else
+                        {
+                            @item.Grade
+                        }
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+    }
+</div>
+
+@if (Request.HttpMethod == "POST")
+{
+    <div style="float:left;width:100%;">
+        <br />
+        @if (Model.CourseStatCollection.Count() > 0)
+        {
+            <div style="float: left;">
+                <table border="1" style="border-collapse: collapse;">
+                    <tr>
+                        <th>課程名稱</th>
+                        <th>課程平均成績</th>
+                        <th>課程最高成績</th>
+                        <th>課程最低成績</th>
+                        <th>修課學生數</th>
+                        <th>及格的學生人數</th>
+                    </tr>
+                    @foreach (var item in Model.CourseStatCollection)
+                    {
+                        <tr>
+                            <td>@item.CourseName</td>
+                            <td style="text-align:right;">@item.AverageGrade.ToString("0.00")</td>
+                            <td style="text-align:right;">@item.MaxGrade</td>
+                            <td style="text-align:right;">@item.MinGrade</td>
+                            <td style="text-align:right;">@item.StudentCount</td>
+                            <td style="text-align:right;">@item.StudentPassCount</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        }
+        <div style="float: left;">&nbsp;&nbsp;</div>
+        @if (Model.StudentStatCollection.Count() > 0)
+        {
+            <div style="float: left;">
+                <table border="1" style="border-collapse: collapse;">
+                    <tr>
+                        <th>學生姓名</th>
+                        <th>平均成績</th>
+                        <th>最高得分</th>
+                        <th>最低得分</th>
+                        <th>修課數</th>
+                        <th>修課及格數</th>
+                    </tr>
+                    @foreach (var item in Model.StudentStatCollection)
+                    {
+                        <tr>
+                            <td>@item.StudentName</td>
+                            <td style="text-align:right;">@item.AverageGrade.ToString("0.00")</td>
+                            <td style="text-align:right;">@item.MaxGrade</td>
+                            <td style="text-align:right;">@item.MinGrade</td>
+                            <td style="text-align:right;">@item.CourseCount</td>
+                            <td style="text-align:right;">@item.CoursePassCount</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        }
+    </div>
+}
