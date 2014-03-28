@@ -1,0 +1,113 @@
+﻿@{
+    ViewBag.Title = "Google Map Javascript API v3";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<style type="text/css">
+    html {
+        height: 100%;
+    }
+
+    body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    #map_canvas {
+        height: 100%;
+    }
+</style>
+<script src="~/Scripts/jquery-1.8.2.js"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=&sensor=false"></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+<script type="text/javascript">
+    var myLatlng;
+    var mapOptions;
+    var mapdiv;
+    var map;
+    var geocoder;
+
+    $(function () {
+        myLatlng = new google.maps.LatLng(25.042192, 121.565274);
+        mapOptions = {
+            center: myLatlng,
+            zoom: 14,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        mapdiv = document.getElementById("map_canvas");
+        map = new google.maps.Map(mapdiv, mapOptions);
+        geocoder = new google.maps.Geocoder();
+
+        var useragent = navigator.userAgent; //判斷是否為行動裝置
+        if (useragent.indexOf('iPhone') != -1 || useragent.indexOf('Android') != -1) {
+            mapdiv.style.width = '100%';
+            mapdiv.style.height = '100%';
+        } else {
+            mapdiv.style.width = '100%';
+            mapdiv.style.height = '400px';
+        }
+
+        var marker = new google.maps.Marker({
+            position: myLatlng,
+            map: map,
+            title: 'Interfly',
+            icon: new google.maps.MarkerImage('../Images/comms-blue.jpg')
+        });
+        attachDialog(marker, map);
+
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(25.042192, 121.555274),
+            map: map,
+            title: 'Interfly',
+            icon: new google.maps.MarkerImage('../Images/comms-blue.jpg')
+        });
+        attachDialog(marker, map);
+
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(25.042192, 121.545274),
+            map: map,
+            title: 'Interfly',
+            icon: new google.maps.MarkerImage('../Images/comms-blue.jpg')
+        });
+        attachDialog(marker, map);
+    });
+
+    function attachDialog(marker, map) {
+        var markercontent = '<div>';
+        markercontent += '<h4>KYMCO Motorcycle</h4>';
+        markercontent += '<span>Building 44, Russian Blvd., Sangkat Toek Thla, Khan Sen</span><br/>';
+        markercontent += '<span>Phnom Penh, Cambodia</span><br/>';
+        markercontent += '<span>+855 23 981 855</span><br/>';
+        markercontent += '<span><a href="http://tw.yahoo.com">tw.yahoo.com</a></span><br/>';
+        markercontent += '<button>Dev.</button><button>Sal. His</button><button>Parts</button><button>Claim</button>';
+        markercontent += '<button onclick="window.open(\'http://www.google.com\');return false;">Google</button>';
+        markercontent += '</div>';
+        var infowindow = new google.maps.InfoWindow({
+            content: markercontent,
+            size: new google.maps.Size(300, 200)
+        });
+        google.maps.event.addListener(marker, 'click', function () {
+            infowindow.open(map, marker);
+        });
+    }
+
+    function codeAddress() {
+        var address = $('#address').val();
+        geocoder.geocode({ 'address': address }, function (results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                map.setCenter(results[0].geometry.location);
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location
+                });
+            } else {
+                alert('地理編碼服務(Geocoding Service)失敗, 失敗原因: ' + status);
+            }
+        });
+    }
+</script>
+<input id="address" type="text" value="台北市八德路三段">
+<input type="button" value="Geocode" onclick="codeAddress();">
+<div id="map_canvas" style="width:100%; height:100%"></div>
