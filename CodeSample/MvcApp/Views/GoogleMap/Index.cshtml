@@ -52,29 +52,29 @@
         var marker = new google.maps.Marker({
             position: myLatlng,
             map: map,
-            title: 'Interfly',
+            title: 'marker1',
             icon: new google.maps.MarkerImage('../Images/comms-blue.jpg')
         });
         attachDialog(marker, map);
 
         var marker = new google.maps.Marker({
-            position: new google.maps.LatLng(25.042192, 121.555274),
+            position: new google.maps.LatLng(25.043192, 121.555274),
             map: map,
-            title: 'Interfly',
+            title: 'marker2',
             icon: new google.maps.MarkerImage('../Images/comms-blue.jpg')
         });
         attachDialog(marker, map);
 
         var marker = new google.maps.Marker({
-            position: new google.maps.LatLng(25.042192, 121.545274),
+            position: new google.maps.LatLng(25.032192, 121.545274),
             map: map,
-            title: 'Interfly',
+            title: 'marker3',
             icon: new google.maps.MarkerImage('../Images/comms-blue.jpg')
         });
         attachDialog(marker, map);
     });
 
-    function attachDialog(marker, map) {
+    function attachDialog(marker, map) { //在地圖標記(marker)上附加客製化視窗
         var markercontent = '<div>';
         markercontent += '<h4>KYMCO Motorcycle</h4>';
         markercontent += '<span>Building 44, Russian Blvd., Sangkat Toek Thla, Khan Sen</span><br/>';
@@ -93,21 +93,44 @@
         });
     }
 
-    function codeAddress() {
+    function codeAddress() { //用地址定位
         var address = $('#address').val();
         geocoder.geocode({ 'address': address }, function (results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
                 map.setCenter(results[0].geometry.location);
                 var marker = new google.maps.Marker({
+                    position: results[0].geometry.location,
                     map: map,
-                    position: results[0].geometry.location
+                    title: address
                 });
             } else {
                 alert('地理編碼服務(Geocoding Service)失敗, 失敗原因: ' + status);
             }
         });
     }
+
+    function currentPosition() { //取得目前位置
+        if (navigator.geolocation) {
+            browserSupportFlag = true;
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                map.setCenter(initialLocation);
+                var marker = new google.maps.Marker({
+                    position: initialLocation,
+                    map: map,
+                    title: '目前位置',
+                });
+            }, function () {
+                if (browserSupportFlag == true) {
+                    alert("地圖定位失敗");
+                } else {
+                    alert("您的瀏覽器不支援定位服務");
+                }
+            });
+        }
+    }
 </script>
 <input id="address" type="text" value="台北市八德路三段">
-<input type="button" value="Geocode" onclick="codeAddress();">
+<input type="button" value="查詢" onclick="codeAddress();">
+<input type="button" value="目前位置" onclick="currentPosition();">
 <div id="map_canvas" style="width:100%; height:100%"></div>
