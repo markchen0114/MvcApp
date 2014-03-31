@@ -72,14 +72,19 @@
             icon: new google.maps.MarkerImage('../Images/comms-blue.jpg')
         });
         attachDialog(marker, map);
+
+        var bounds = new google.maps.LatLngBounds();
+        bounds.extend(new google.maps.LatLng(25.042192, 121.565274));
+        bounds.extend(new google.maps.LatLng(25.043192, 121.555274));
+        bounds.extend(new google.maps.LatLng(25.032192, 121.545274));
+        map.fitBounds(bounds);
     });
 
     function attachDialog(marker, map) { //在地圖標記(marker)上附加客製化視窗
         var markercontent = '<div>';
         markercontent += '<h4>KYMCO Motorcycle</h4>';
-        markercontent += '<span>Building 44, Russian Blvd., Sangkat Toek Thla, Khan Sen</span><br/>';
-        markercontent += '<span>Phnom Penh, Cambodia</span><br/>';
-        markercontent += '<span>+855 23 981 855</span><br/>';
+        markercontent += '<span>台北市信義區基隆路一段159號7F</span><br/>';
+        markercontent += '<span>+886 2 2767-1284</span><br/>';
         markercontent += '<span><a href="http://tw.yahoo.com">tw.yahoo.com</a></span><br/>';
         markercontent += '<button>Dev.</button><button>Sal. His</button><button>Parts</button><button>Claim</button>';
         markercontent += '<button onclick="window.open(\'http://www.google.com\');return false;">Google</button>';
@@ -98,12 +103,13 @@
         geocoder.geocode({ 'address': address }, function (results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
                 $('#position').text('{' + results[0].geometry.location.lat() + ',' + results[0].geometry.location.lng() + '}');
-                map.setCenter(results[0].geometry.location);
                 var marker = new google.maps.Marker({
                     position: results[0].geometry.location,
                     map: map,
                     title: address
                 });
+                map.setCenter(results[0].geometry.location);
+                map.fitBounds(results[0].geometry.location);
             } else {
                 alert('地理編碼服務(Geocoding Service)失敗, 失敗原因: ' + status);
             }
