@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -332,10 +333,13 @@ namespace MvcApp.Models
         public class Course
         {
             /// <summary>課程代號</summary>
+            [Display(Name = "課程代號")]
             public int CourseID;
             /// <summary>課程名稱</summary>
+            [Display(Name = "課程名稱")]
             public string Name;
             /// <summary>授課老師代號</summary>
+            [Display(Name = "授課老師代號")]
             public int TeacherID;
         }
 
@@ -343,8 +347,10 @@ namespace MvcApp.Models
         public class Teacher
         {
             /// <summary>老師代號</summary>
+            [Display(Name = "老師代號")]
             public int TeacherID;
             /// <summary>老師姓名</summary>
+            [Display(Name = "老師姓名")]
             public string Name;
         }
 
@@ -352,8 +358,10 @@ namespace MvcApp.Models
         public class Student
         {
             /// <summary>學生代號</summary>
+            [Display(Name = "學生代號")]
             public int StudentID;
             /// <summary>學生姓名</summary>
+            [Display(Name = "學生姓名")]
             public string Name;
         }
 
@@ -361,10 +369,13 @@ namespace MvcApp.Models
         public class StudentCourseGrade
         {
             /// <summary>學生代號</summary>
+            [Display(Name = "學生代號")]
             public int StudentID;
             /// <summary>課程代號</summary>
+            [Display(Name = "課程代號")]
             public int CourseID;
             /// <summary>課程得分</summary>
+            [Display(Name = "課程得分")]
             public int Grade;
         }
         #endregion 資料物件(取代資料庫) 課程/老師/學生/學生課程得分

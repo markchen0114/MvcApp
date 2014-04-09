@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "LinqToXML";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@Html.ActionLink("Get Sample XML of Menu", "GetSampleXMLOfMenu", "LinqToXML")
+@Html.ActionLink("Get Sample XML of UserAuthor", "GetSampleXMLOfUserAuthor", "LinqToXML")
+
+<table>
+    <tr>
+        @using (Html.BeginForm("Index", "LinqToXML", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <td><input type="file" name="MenuXMLFile" /></td>
+            <td><label>Menu Code:<input type="text" name="MenuCode" /></label></td>
+            <td><button name="act" value="XMLMenu">Read XML File for Menu</button></td>
+            <td>@Html.ValidationMessage("MenuXMLFile")</td>
+        }
+    </tr>
+    <tr>
+        @using (Html.BeginForm("Index", "LinqToXML", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <td><input type="file" name="UserAuthorXMLFile" /></td>
+            <td><label>SystemUserId:<input type="text" name="SystemUserId" /></label></td>
+            <td><button name="act" value="XMLUserAuthor">Read XML File for UserAuthor</button></td>
+            <td>@Html.ValidationMessage("UserAuthorXMLFile")</td>
+        }
+    </tr>
+    <tr>
+        <td colspan="4">@Html.Raw(ViewBag.XML)</td>
+    </tr>
+</table>
