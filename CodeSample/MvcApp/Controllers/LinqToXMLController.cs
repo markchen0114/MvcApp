@@ -27,9 +27,9 @@ namespace MvcApp.Controllers
                         using (BinaryReader br = new BinaryReader(hpf.InputStream))
                             br.Read(buffer, 0, buffer.Length);
                         string XML = System.Text.Encoding.Default.GetString(buffer);
-                        //XDocument xd = XDocument.Load(fileName); //Load XML from file
+                        //XDocument xd = XDocument.Load("D:\\Menu.xml"); //Load XML from file
                         XDocument xd = XDocument.Parse(XML); //Parse XML from string
-
+                        
                         string MenuCode = "";
                         if (fc["MenuCode"] != null)
                             MenuCode = fc["MenuCode"].ToString();

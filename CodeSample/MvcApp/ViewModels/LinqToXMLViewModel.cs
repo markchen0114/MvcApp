@@ -80,7 +80,7 @@ namespace MvcApp.ViewModels
             return sw.ToString();
         }
 
-        /// <summary>Read XML</summary>
+        /// <summary>Search XML</summary>
         /// <param name="root">XML Root</param>
         /// <param name="elementName">Element Name Condition, case sensitive</param>
         /// <param name="attributeName">Attribute Name Condition, case sensitive</param>
@@ -106,13 +106,15 @@ namespace MvcApp.ViewModels
                 foreach (var a in e.Attributes()) //列出所有Attribute
                     strHtml += "<font color='blue'>[ATT:" + e.Name + "]" + a.Name + ":" + a.Value + "</font><br>";
                 foreach (var echild in e.Elements()) //列出沒有子項目的Element
-                    if (echild.Descendants().Count() == 0)
-                        strHtml += echild.Name + ":" + echild.Value + "<br>";
-                if (e.Descendants().Elements().Count() > 0) //有子項目的Element進入Recursive
                 {
-                    strHtml += "<font color='red'>[Child-Begin]" + e.Name + ":" + e.FirstAttribute + "</font><br>";
-                    strHtml += SearchXML(e);
-                    strHtml += "<font color='red'>[Child-End]" + e.Name + ":" + e.FirstAttribute + "</font><br>";
+                    if (echild.Elements().Count() == 0)
+                        strHtml += echild.Name + ":" + echild.Value + "<br>";
+                    else
+                    {
+                        strHtml += "<font color='red'>[Child-Begin]" + e.Name + ":" + e.FirstAttribute + "</font><br>";
+                        strHtml += SearchXML(echild);
+                        strHtml += "<font color='red'>[Child-End]" + e.Name + ":" + e.FirstAttribute + "</font><br>";
+                    }
                 }
             }
             return strHtml;
