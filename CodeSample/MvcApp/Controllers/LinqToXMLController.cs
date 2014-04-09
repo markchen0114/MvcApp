@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using System.Xml.Linq;
 
 namespace MvcApp.Controllers
 {
@@ -13,7 +14,6 @@ namespace MvcApp.Controllers
         public ActionResult Index(FormCollection fc)
         {
             HttpPostedFileBase hpf = null;
-            string XML = ""; //User上傳的XML
             string ViewXML = ""; //XML的搜尋結果
             switch (fc["act"])
             {
@@ -26,12 +26,14 @@ namespace MvcApp.Controllers
                         byte[] buffer = new byte[hpf.ContentLength];
                         using (BinaryReader br = new BinaryReader(hpf.InputStream))
                             br.Read(buffer, 0, buffer.Length);
-                        XML = System.Text.Encoding.Default.GetString(buffer);
+                        string XML = System.Text.Encoding.Default.GetString(buffer);
+                        //XDocument xd = XDocument.Load(fileName); //Load XML from file
+                        XDocument xd = XDocument.Parse(XML); //Parse XML from string
 
                         string MenuCode = "";
                         if (fc["MenuCode"] != null)
                             MenuCode = fc["MenuCode"].ToString();
-                        ViewXML = new ViewModels.LinqToXMLViewModel().ReadXML(XML, "Menu", "Code", MenuCode);
+                        ViewXML = new ViewModels.LinqToXMLViewModel().SearchXML(xd.Root, "Menu", "Code", MenuCode);
                     }
                     break;
                 case "XMLUserAuthor": //讀取 XML File of UserAuthor
@@ -43,12 +45,14 @@ namespace MvcApp.Controllers
                         byte[] buffer = new byte[hpf.ContentLength];
                         using (BinaryReader br = new BinaryReader(hpf.InputStream))
                             br.Read(buffer, 0, buffer.Length);
-                        XML = System.Text.Encoding.Default.GetString(buffer);
+                        string XML = System.Text.Encoding.Default.GetString(buffer);
+                        //XDocument xd = XDocument.Load(fileName); //Load XML from file
+                        XDocument xd = XDocument.Parse(XML); //Parse XML from string
 
                         string SystemUserId = "";
                         if (fc["SystemUserId"] != null)
                             SystemUserId = fc["SystemUserId"].ToString();
-                        ViewXML = new ViewModels.LinqToXMLViewModel().ReadXML(XML, "UserAuthor", "SystemUserId", SystemUserId);
+                        ViewXML = new ViewModels.LinqToXMLViewModel().SearchXML(xd.Root, "UserAuthor", "SystemUserId", SystemUserId);
                     }
                     break;
             }

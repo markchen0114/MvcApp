@@ -80,23 +80,41 @@ namespace MvcApp.ViewModels
             return sw.ToString();
         }
 
-        /// <summary>Read XML From String (Only get one level for XML, don't implement recursive to extract whole XML)</summary>
-        /// <param name="XML">String with XML Format</param>
-        /// <param name="elementName">Element Name Condition</param>
-        /// <param name="attributeName">Attribute Name Condition</param>
-        /// <param name="attributeValue">Attribute Code Condition</param>
+        /// <summary>Read XML</summary>
+        /// <param name="root">XML Root</param>
+        /// <param name="elementName">Element Name Condition, case sensitive</param>
+        /// <param name="attributeName">Attribute Name Condition, case sensitive</param>
+        /// <param name="attributeValue">Attribute Code Condition, case sensitive</param>
         /// <returns></returns>
-        public string ReadXML(string XML, string elementName, string attributeName, string attributeValue)
+        public string SearchXML(XElement root, string elementName = "", string attributeName = "", string attributeValue = "")
         {
-            //XDocument xd = XDocument.Load(fileName); //Read XML from file
-            XDocument xd = XDocument.Parse(XML); //Read XML from string
-            var q =
-                from x in xd.Descendants(elementName)
-                where string.IsNullOrEmpty(attributeValue) || (x.Attribute(attributeName) != null && x.Attribute(attributeName).Value == attributeValue)
-                select x;
+            var XMLElementList = root.Elements();
+            #region 依條件篩選
+            if (!string.IsNullOrEmpty(elementName))
+            {
+                XMLElementList = XMLElementList.Where(w => w.Name == elementName);
+                if (XMLElementList.Count() == 0) //若Elements中無符合elemantName的資料, 則往Child找elementName
+                    XMLElementList = root.Descendants(elementName);
+            }
+            if (!string.IsNullOrEmpty(attributeValue))
+                XMLElementList = XMLElementList.Where(w => w.Attribute(attributeName) != null && w.Attribute(attributeName).Value == attributeValue);
+            #endregion 依條件篩選
+
             string strHtml = "";
-            foreach (var o in q.SelectMany(s => s.Elements())) //需要Recursive解出子項目, 此範例未處理
-                strHtml += o.Name + ":" + o.Value + "<br>";
+            foreach (var e in XMLElementList)
+            {
+                foreach (var a in e.Attributes()) //列出所有Attribute
+                    strHtml += "<font color='blue'>[ATT:" + e.Name + "]" + a.Name + ":" + a.Value + "</font><br>";
+                foreach (var echild in e.Elements()) //列出沒有子項目的Element
+                    if (echild.Descendants().Count() == 0)
+                        strHtml += echild.Name + ":" + echild.Value + "<br>";
+                if (e.Descendants().Elements().Count() > 0) //有子項目的Element進入Recursive
+                {
+                    strHtml += "<font color='red'>[Child-Begin]" + e.Name + ":" + e.FirstAttribute + "</font><br>";
+                    strHtml += SearchXML(e);
+                    strHtml += "<font color='red'>[Child-End]" + e.Name + ":" + e.FirstAttribute + "</font><br>";
+                }
+            }
             return strHtml;
         }
     }
