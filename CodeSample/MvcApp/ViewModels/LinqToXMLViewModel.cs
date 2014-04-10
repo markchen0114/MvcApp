@@ -105,16 +105,13 @@ namespace MvcApp.ViewModels
             {
                 foreach (var a in e.Attributes()) //列出所有Attribute
                     strHtml += "<font color='blue'>[ATT:" + e.Name + "]" + a.Name + ":" + a.Value + "</font><br>";
-                foreach (var echild in e.Elements()) //列出沒有子項目的Element
+                if (e.Elements().Count() == 0) //列出沒有子項目的Element
+                    strHtml += e.Name + ":" + e.Value + "<br>";
+                else
                 {
-                    if (echild.Elements().Count() == 0)
-                        strHtml += echild.Name + ":" + echild.Value + "<br>";
-                    else
-                    {
-                        strHtml += "<font color='red'>[Child-Begin]" + e.Name + ":" + e.FirstAttribute + "</font><br>";
-                        strHtml += SearchXML(echild);
-                        strHtml += "<font color='red'>[Child-End]" + e.Name + ":" + e.FirstAttribute + "</font><br>";
-                    }
+                    strHtml += "<font color='red'>[Child-Begin]" + e.Name + ":" + e.FirstAttribute + "</font><br>";
+                    strHtml += SearchXML(e);
+                    strHtml += "<font color='red'>[Child-End]" + e.Name + ":" + e.FirstAttribute + "</font><br>";
                 }
             }
             return strHtml;
